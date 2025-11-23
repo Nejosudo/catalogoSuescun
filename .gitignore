@@ -18,6 +18,7 @@ supabase_schema.sql
 dev.db
 DEPLOY.md
 DEPLOY_GUIDE.md
+DEPLOY_MASTER.md
 # next.js
 /.next/
 /out/
