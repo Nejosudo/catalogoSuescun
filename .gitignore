@@ -12,7 +12,12 @@
 
 # testing
 /coverage
-
+test-db-connection.js
+test-prisma.js
+supabase_schema.sql
+dev.db
+DEPLOY.md
+DEPLOY_GUIDE.md
 # next.js
 /.next/
 /out/
@@ -39,3 +44,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/app/generated/prisma

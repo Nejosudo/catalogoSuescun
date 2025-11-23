@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // Uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // Uses a direct connection
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id               Int         @id @default(autoincrement())
+  name             String
+  description      String?
+  price            Float
+  images           String      // Stored as JSON string of image URLs
+  categoryId       Int
+  category         Category    @relation(fields: [categoryId], references: [id])
+  type             String      // e.g., "Mug", "Keychain", "Small", "Medium"
+  isPersonalizable Boolean     @default(false)
+  isHidden         Boolean     @default(false)
+  orderItems       OrderItem[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  customerName    String
+  customerContact String      // Phone or Email
+  status          String      // "REQUESTED", "COMPLETED"
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id                   Int     @id @default(autoincrement())
+  orderId              Int
+  order                Order   @relation(fields: [orderId], references: [id])
+  productId            Int
+  product              Product @relation(fields: [productId], references: [id])
+  quantity             Int
+  personalizationImage String? // URL to uploaded image
+  personalizationText  String?
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("USER") // "ADMIN", "USER"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GlobalSettings {
+  id    Int    @id @default(autoincrement())
+  key   String @unique // e.g., "registration_enabled"
+  value String // "true" or "false"
+}
