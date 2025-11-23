@@ -20,6 +20,7 @@ DEPLOY.md
 DEPLOY_GUIDE.md
 DEPLOY_MASTER.md
 DEPLOY_VERCEL.md
+DEPLOY_RAILWAY.md
 # next.js
 /.next/
 /out/
