@@ -19,6 +19,7 @@ dev.db
 DEPLOY.md
 DEPLOY_GUIDE.md
 DEPLOY_MASTER.md
+DEPLOY_VERCEL.md
 # next.js
 /.next/
 /out/
