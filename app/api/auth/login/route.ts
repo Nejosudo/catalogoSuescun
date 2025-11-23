@@ -28,19 +28,20 @@ export async function POST(request: Request) {
     }
 
     // 3. Set Auth Cookie
-    // In a real app, use JWT or Session ID. Here, we'll use a simple flag + user ID for demo purposes.
-    // We are using the 'cookies' helper from next/headers which is available in Server Actions/Route Handlers
     const cookieStore = await cookies();
     
-    // Set a simple cookie. In production, sign this!
-    cookieStore.set('auth_token', JSON.stringify({ userId: user.id, role: user.role }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-      path: '/',
-    });
+    if (user && typeof user === 'object' && 'id' in user) {
+        cookieStore.set('auth_token', JSON.stringify({ userId: user.id, role: user.role }), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+        path: '/',
+        });
 
-    return NextResponse.json({ message: 'Login successful', user: { email: user.email, role: user.role } });
+        return NextResponse.json({ message: 'Login successful', user: { email: user.email, role: user.role } });
+    } else {
+        throw new Error('User data is invalid');
+    }
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });
