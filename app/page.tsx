@@ -77,7 +77,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun pendejo</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun</h1>
           <div className="flex items-center gap-4">
             <Link href="/cart" className="text-gray-600 hover:text-blue-600 font-medium">
               Cart
