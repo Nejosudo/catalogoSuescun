@@ -1,9 +1,3 @@
-import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-
-export async function POST(request: Request) {
-  try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
@@ -11,19 +5,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = Date.now() + '_' + file.name.replaceAll(' ', '_');
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if exists
-    }
+    // Upload to Cloudinary using a Promise wrapper
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: 'catalogo-suescun' }, // Optional folder
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(buffer);
+    });
 
-    await writeFile(path.join(uploadDir, filename), buffer);
-
-    return NextResponse.json({ url: `/uploads/${filename}` });
+    return NextResponse.json({ url: result.secure_url });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
