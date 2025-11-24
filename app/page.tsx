@@ -63,8 +63,8 @@ export default function HomePage() {
 
   const filteredProducts = Array.isArray(products) ? products.filter((product) => {
     const matchesCategory = selectedCategory ? product.categoryId === selectedCategory : true;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.type.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.type.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesPersonalizable = showPersonalizableOnly ? product.isPersonalizable : true;
     return matchesCategory && matchesSearch && matchesPersonalizable;
   }) : [];
@@ -72,14 +72,14 @@ export default function HomePage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 
   return (
-    
+
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun preview</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun pendejo</h1>
           <div className="flex items-center gap-4">
-             <Link href="/cart" className="text-gray-600 hover:text-blue-600 font-medium">
+            <Link href="/cart" className="text-gray-600 hover:text-blue-600 font-medium">
               Cart
             </Link>
             <Link href="/admin" className="text-gray-500 hover:text-gray-900 text-sm">
@@ -125,11 +125,10 @@ export default function HomePage() {
               <div className="space-y-2">
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
-                    selectedCategory === null
+                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${selectedCategory === null
                       ? 'bg-blue-50 text-blue-700 font-medium'
                       : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                    }`}
                 >
                   All Categories
                 </button>
@@ -137,11 +136,10 @@ export default function HomePage() {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
-                      selectedCategory === category.id
+                    className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${selectedCategory === category.id
                         ? 'bg-blue-50 text-blue-700 font-medium'
                         : 'text-gray-600 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     {category.name}
                   </button>
@@ -172,8 +170,8 @@ export default function HomePage() {
             ) : (
               <div className="bg-white p-12 rounded-lg shadow text-center">
                 <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
-                <button 
-                  onClick={() => {setSelectedCategory(null); setSearchQuery('');}}
+                <button
+                  onClick={() => { setSelectedCategory(null); setSearchQuery(''); }}
                   className="mt-4 text-blue-600 hover:underline"
                 >
                   Clear filters
