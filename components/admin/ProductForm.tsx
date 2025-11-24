@@ -63,28 +63,55 @@ export default function ProductForm({ initialData }: ProductFormProps) {
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
     }));
   };
-
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append('file', file);
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+
+    if (!cloudName) {
+      console.error('Cloud name is missing');
+      return;
+    }
 
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.url) {
+      // 1. Get signature from our backend
+      const signRes = await fetch('/api/sign-cloudinary', { method: 'POST' });
+      
+      if (!signRes.ok) throw new Error('Failed to get upload signature');
+      
+      const signData = await signRes.json();
+      const { signature, timestamp, folder, apiKey } = signData;
+
+      // 2. Upload directly to Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', apiKey);
+      formData.append('timestamp', timestamp.toString());
+      formData.append('signature', signature);
+      formData.append('folder', folder);
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      const uploadData = await uploadRes.json();
+
+      if (uploadData.secure_url) {
         setFormData((prev) => ({
           ...prev,
-          images: [...prev.images, data.url],
+          images: [...prev.images, uploadData.secure_url],
         }));
+      } else {
+        throw new Error(uploadData.error?.message || 'Upload failed');
       }
     } catch (error) {
       console.error('Upload failed', error);
+      alert('Error uploading image. Please try again.');
     }
   };
 
