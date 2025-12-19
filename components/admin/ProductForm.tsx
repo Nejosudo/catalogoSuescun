@@ -18,6 +18,7 @@ interface Product {
   categoryId: number;
   type: string;
   isPersonalizable: boolean;
+  isPromotion: boolean;
   isHidden: boolean;
 }
 
@@ -38,6 +39,7 @@ export default function ProductForm({ initialData }: ProductFormProps) {
     categoryId: 0,
     type: '',
     isPersonalizable: false,
+    isPromotion: false,
     isHidden: false,
     ...initialData,
   });
@@ -250,6 +252,17 @@ export default function ProductForm({ initialData }: ProductFormProps) {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label className="ml-2 block text-sm text-gray-900">Hidden</label>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="isPromotion"
+              checked={formData.isPromotion}
+              onChange={handleChange}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label className="ml-2 block text-sm text-gray-900">Promotion</label>
           </div>
         </div>
 

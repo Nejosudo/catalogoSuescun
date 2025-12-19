@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
+import PromotionsCarousel from '@/components/PromotionsCarousel';
 import Logo from '@/components/Logo';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
@@ -21,6 +22,7 @@ interface Product {
   categoryId: number;
   type: string;
   isPersonalizable: boolean;
+  isPromotion: boolean;
   isHidden: boolean;
 }
 
@@ -123,6 +125,22 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Promotions Section */}
+        {products.filter(p => p.isPromotion).length > 0 && (
+          <section className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
+                Promociones Destacadas
+              </span>
+            </h2>
+            <PromotionsCarousel 
+              products={products.filter(p => p.isPromotion)} 
+              onProductClick={setSelectedProduct} 
+            />
+          </section>
+        )}
+
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}
           <aside className="w-full md:w-64 flex-shrink-0">

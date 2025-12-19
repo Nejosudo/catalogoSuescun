@@ -18,6 +18,7 @@ export async function GET(
 
     return NextResponse.json(product);
   } catch (error) {
+    console.error('GET [id] Error:', error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }
@@ -29,7 +30,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, description, price, images, categoryId, type, isPersonalizable, isHidden } = body;
+    const { name, description, price, images, categoryId, type, isPersonalizable, isHidden, isPromotion } = body;
 
     const product = await prisma.product.update({
       where: { id: parseInt(id) },
@@ -41,12 +42,14 @@ export async function PUT(
         categoryId: categoryId ? parseInt(categoryId) : undefined,
         type,
         isPersonalizable,
+        isPromotion,
         isHidden,
       },
     });
 
     return NextResponse.json(product);
   } catch (error) {
+    console.error('PUT [id] Error:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
   }
 }

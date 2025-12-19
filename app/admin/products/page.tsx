@@ -14,9 +14,13 @@ interface Product {
   isHidden: boolean;
 }
 
+  // ... (previous imports)
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
+  const [bulkType, setBulkType] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -24,16 +28,13 @@ export default function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      // Fetch all products (admin view)
-      // We might need to adjust API to allow fetching hidden ones explicitly if default is hidden=false
-      // But my API implementation for GET /api/products handles isHidden query param.
-      // If I don't pass isHidden, it returns all?
-      // Let's check my API implementation:
-      // if (isHidden === 'false') where.isHidden = false;
-      // So if I don't pass it, it doesn't filter by isHidden, so it returns all. Correct.
       const res = await fetch('/api/products');
       const data = await res.json();
       setProducts(data);
+      
+      // Extract unique types for filter
+      const types = Array.from(new Set(data.map((p: Product) => p.type))).filter(Boolean) as string[];
+      setUniqueTypes(types);
     } catch (error) {
       console.error('Failed to fetch products', error);
     } finally {
@@ -41,6 +42,29 @@ export default function ProductsPage() {
     }
   };
 
+  const handleBulkVisibility = async (isHidden: boolean) => {
+    if (!bulkType) return alert('Please select a type first');
+    if (!confirm(`Are you sure you want to ${isHidden ? 'HIDE' : 'SHOW'} all products of type "${bulkType}"?`)) return;
+
+    try {
+      const res = await fetch('/api/products/bulk-visibility', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: bulkType, isHidden }),
+      });
+
+      if (res.ok) {
+        alert('Bulk update successful');
+        fetchProducts();
+      } else {
+        alert('Failed to update');
+      }
+    } catch (error) {
+      console.error('Bulk update error', error);
+    }
+  };
+
+  // ... (handleDelete, toggleHidden same as before)
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
@@ -75,8 +99,36 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h2 className="text-2xl text-gray-700 font-bold">Manage Products</h2>
+        
+        {/* Bulk Actions Control */}
+        <div className="bg-gray-100 p-2 rounded flex items-center gap-2">
+          <span className="text-sm font-semibold text-gray-600">Bulk Actions:</span>
+          <select 
+            value={bulkType} 
+            onChange={(e) => setBulkType(e.target.value)}
+            className="text-sm border-gray-300 rounded shadow-sm p-1 text-black"
+          >
+            <option value="">Select Type...</option>
+            {uniqueTypes.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+          <button 
+            onClick={() => handleBulkVisibility(true)}
+            disabled={!bulkType}
+            className="bg-gray-600 text-white text-xs px-2 py-1 rounded hover:bg-gray-700 disabled:opacity-50"
+          >
+            Hide All
+          </button>
+          <button 
+            onClick={() => handleBulkVisibility(false)}
+            disabled={!bulkType}
+            className="bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700 disabled:opacity-50"
+          >
+            Show All
+          </button>
+        </div>
+
         <Link
           href="/admin/products/new"
           className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 flex items-center"
@@ -94,13 +146,13 @@ export default function ProductsPage() {
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Type
+                Category / Type
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Price
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tags
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
@@ -117,13 +169,18 @@ export default function ProductsPage() {
                   {product.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.category?.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.type}
+                  <div className="font-medium">{product.category?.name}</div>
+                  <div className="text-xs text-gray-400">{product.type}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   $ {formatPrice(product.price)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                 {(product as any).isPromotion && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 mr-2">
+                      Promo
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button

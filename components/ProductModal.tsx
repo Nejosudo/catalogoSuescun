@@ -116,7 +116,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               Contáctanos para más información o para realizar un pedido personalizado.
             </p>
             <div className="text-lg font-bold text-green-900">
-              WhatsApp: +57 300 123 4567
+              WhatsApp: +57 315 713 9149
             </div>
           </div>
         </div>

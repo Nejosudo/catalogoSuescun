@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const categoryId = searchParams.get('categoryId');
   const type = searchParams.get('type');
   const isHidden = searchParams.get('isHidden');
+  const isPromotion = searchParams.get('isPromotion');
 
   const where: any = {};
 
@@ -17,6 +18,9 @@ export async function GET(request: Request) {
   }
   if (isHidden === 'false') {
     where.isHidden = false;
+  }
+  if (isPromotion === 'true') {
+    where.isPromotion = true;
   }
   // If isHidden is not specified or 'true', we might show all (for admin), 
   // but usually public API should default to hidden=false. 
@@ -33,6 +37,7 @@ export async function GET(request: Request) {
     });
     return NextResponse.json(products);
   } catch (error) {
+    console.error('GET Error:', error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 }
@@ -40,7 +45,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, description, price, images, categoryId, type, isPersonalizable } = body;
+    const { name, description, price, images, categoryId, type, isPersonalizable, isPromotion } = body;
 
     const product = await prisma.product.create({
       data: {
@@ -51,6 +56,7 @@ export async function POST(request: Request) {
         categoryId: parseInt(categoryId),
         type,
         isPersonalizable: isPersonalizable || false,
+        isPromotion: isPromotion || false,
       },
     });
 

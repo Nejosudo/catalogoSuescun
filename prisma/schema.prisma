@@ -28,6 +28,7 @@ model Product {
   category         Category    @relation(fields: [categoryId], references: [id])
   type             String      // e.g., "Mug", "Keychain", "Small", "Medium"
   isPersonalizable Boolean     @default(false)
+  isPromotion      Boolean     @default(false)
   isHidden         Boolean     @default(false)
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
