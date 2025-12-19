@@ -9,6 +9,7 @@ interface Product {
   images: string[] | string;
   category: { name: string };
   isPersonalizable: boolean;
+  isPromotion: boolean;
 }
 
 interface ProductCardProps {
@@ -38,6 +39,11 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
               <Tag className="w-3 h-3 mr-1" />
               Personalizable
             </div>
+          )}
+          {product.isPromotion && (
+             <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center shadow">
+               Promoción
+             </div>
           )}
         </div>
         <div className="p-4">

@@ -36,6 +36,7 @@ export default function HomePage() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [showPersonalizableOnly, setShowPersonalizableOnly] = useState(false);
+  const [showPromotionsOnly, setShowPromotionsOnly] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -95,7 +96,8 @@ export default function HomePage() {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.type.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesPersonalizable = showPersonalizableOnly ? product.isPersonalizable : true;
-    return matchesCategory && matchesSearch && matchesPersonalizable;
+    const matchesPromotion = showPromotionsOnly ? product.isPromotion : true;
+    return matchesCategory && matchesSearch && matchesPersonalizable && matchesPromotion;
   }) : [];
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -160,7 +162,7 @@ export default function HomePage() {
 
             <div className="bg-white p-6 rounded-lg shadow mb-6">
               <h3 className="font-semibold text-gray-900 mb-4">Filters</h3>
-              <label className="flex items-center space-x-2 cursor-pointer">
+              <label className="flex items-center space-x-2 cursor-pointer mb-2">
                 <input
                   type="checkbox"
                   checked={showPersonalizableOnly}
@@ -168,6 +170,16 @@ export default function HomePage() {
                   className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
                 />
                 <span className="text-gray-700 text-sm">Personalizable Only</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showPromotionsOnly}
+                  onChange={(e) => setShowPromotionsOnly(e.target.checked)}
+                  className="rounded text-orange-500 focus:ring-orange-500 h-4 w-4"
+                />
+                <span className="text-gray-700 text-sm font-medium">Solo Promociones</span>
               </label>
             </div>
 
