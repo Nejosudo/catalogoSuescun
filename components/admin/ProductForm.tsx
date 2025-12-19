@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 
 interface Category {
   id: number;
@@ -29,6 +29,7 @@ export default function ProductForm({ initialData }: ProductFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState<Product>({
     name: '',
     description: '',
@@ -66,52 +67,63 @@ export default function ProductForm({ initialData }: ProductFormProps) {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
 
-    const file = e.target.files[0];
+    setIsUploading(true);
+    const files = Array.from(e.target.files);
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
     if (!cloudName) {
       console.error('Cloud name is missing');
+      setIsUploading(false);
       return;
     }
 
     try {
-      // 1. Get signature from our backend
-      const signRes = await fetch('/api/sign-cloudinary', { method: 'POST' });
-      
-      if (!signRes.ok) throw new Error('Failed to get upload signature');
-      
-      const signData = await signRes.json();
-      const { signature, timestamp, folder, apiKey } = signData;
+      // Process all files in parallel
+      const uploadPromises = files.map(async (file) => {
+        // 1. Get signature from our backend
+        const signRes = await fetch('/api/sign-cloudinary', { method: 'POST' });
+        
+        if (!signRes.ok) throw new Error('Failed to get upload signature');
+        
+        const signData = await signRes.json();
+        const { signature, timestamp, folder, apiKey } = signData;
 
-      // 2. Upload directly to Cloudinary
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('api_key', apiKey);
-      formData.append('timestamp', timestamp.toString());
-      formData.append('signature', signature);
-      formData.append('folder', folder);
+        // 2. Upload directly to Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('api_key', apiKey);
+        formData.append('timestamp', timestamp.toString());
+        formData.append('signature', signature);
+        formData.append('folder', folder);
 
-      const uploadRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
+        const uploadRes = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        const uploadData = await uploadRes.json();
+
+        if (uploadData.secure_url) {
+          return uploadData.secure_url;
+        } else {
+          throw new Error(uploadData.error?.message || 'Upload failed');
         }
-      );
+      });
 
-      const uploadData = await uploadRes.json();
+      const newUrls = await Promise.all(uploadPromises);
 
-      if (uploadData.secure_url) {
-        setFormData((prev) => ({
-          ...prev,
-          images: [...prev.images, uploadData.secure_url],
-        }));
-      } else {
-        throw new Error(uploadData.error?.message || 'Upload failed');
-      }
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...newUrls],
+      }));
     } catch (error) {
       console.error('Upload failed', error);
-      alert('Error uploading image. Please try again.');
+      alert('Error uploading images. Please try again.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -256,10 +268,21 @@ export default function ProductForm({ initialData }: ProductFormProps) {
                 </button>
               </div>
             ))}
-            <label className="w-24 h-24 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-blue-500">
-              <Upload className="w-6 h-6 text-gray-400" />
-              <span className="text-xs text-gray-500 mt-1">Upload</span>
-              <input type="file" onChange={handleImageUpload} className="hidden" accept="image/*" />
+            <label className={`w-24 h-24 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              {isUploading ? (
+                <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+              ) : (
+                <Upload className="w-6 h-6 text-gray-400" />
+              )}
+              <span className="text-xs text-gray-500 mt-1">{isUploading ? 'Uploading...' : 'Upload'}</span>
+              <input 
+                type="file" 
+                onChange={handleImageUpload} 
+                className="hidden" 
+                accept="image/*" 
+                multiple 
+                disabled={isUploading}
+              />
             </label>
           </div>
         </div>
