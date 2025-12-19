@@ -71,12 +71,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    // 2. Delete OrderItems associated with this product (Manual Cascade)
-    await prisma.orderItem.deleteMany({
-      where: { productId: productId },
-    });
-
-    // 3. Delete the product
+    // 2. Delete the product
     await prisma.product.delete({
       where: { id: productId },
     });
