@@ -1,6 +1,11 @@
 import Link from 'next/link';
+import { Metadata } from 'next';
 import { LayoutDashboard, Package, List, Home } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
+
+export const metadata: Metadata = {
+  title: "Administracion Suescun",
+};
 
 export default function AdminLayout({
   children,
@@ -26,6 +31,7 @@ export default function AdminLayout({
             href="/admin/categories"
             className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600"
           >
+            <List className="w-5 h-5 mr-3" />
             Categories
           </Link>
 

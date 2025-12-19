@@ -75,7 +75,7 @@ export default function ProductsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Manage Products</h2>
+        <h2 className="text-2xl text-gray-700 font-bold">Manage Products</h2>
         <Link
           href="/admin/products/new"
           className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 flex items-center"

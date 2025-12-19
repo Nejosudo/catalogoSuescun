@@ -69,7 +69,7 @@ export default function CategoriesPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Manage Categories</h2>
+      <h2 className="text-2xl text-gray-700 font-bold mb-6">Manage Categories</h2>
 
       {/* Add Category Form */}
       <form onSubmit={handleAddCategory} className="mb-8 flex gap-4">
@@ -78,7 +78,7 @@ export default function CategoriesPage() {
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}
           placeholder="New Category Name"
-          className="flex-1 p-2 border rounded shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          className="flex-1 p-2 border text-gray-700 rounded shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
         />
         <button
           type="submit"
