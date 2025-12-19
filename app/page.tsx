@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
+import ProductModal from '@/components/ProductModal';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
 
@@ -28,6 +29,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [showPersonalizableOnly, setShowPersonalizableOnly] = useState(false);
 
@@ -79,9 +81,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun</h1>
           <div className="flex items-center gap-4">
-            <Link href="/cart" className="text-gray-600 hover:text-blue-600 font-medium">
-              Cart
-            </Link>
+
             <Link href="/admin" className="text-gray-500 hover:text-gray-900 text-sm">
               Admin
             </Link>
@@ -164,7 +164,11 @@ export default function HomePage() {
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onClick={() => setSelectedProduct(product)}
+                  />
                 ))}
               </div>
             ) : (
@@ -181,6 +185,14 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* Product Modal */}
+      {selectedProduct && (
+        <ProductModal 
+          product={selectedProduct} 
+          onClose={() => setSelectedProduct(null)} 
+        />
+      )}
     </div>
   );
 }

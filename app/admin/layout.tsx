@@ -28,13 +28,7 @@ export default function AdminLayout({
           >
             Categories
           </Link>
-          <Link
-            href="/admin/orders"
-            className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600"
-          >
-            <ShoppingCart className="w-5 h-5 mr-3" />
-            Orders
-          </Link>
+
           <Link
             href="/admin/settings"
             className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600"

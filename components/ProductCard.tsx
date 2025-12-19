@@ -10,21 +10,27 @@ interface Product {
   isPersonalizable: boolean;
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+interface ProductCardProps {
+  product: Product;
+  onClick: () => void;
+}
+
+export default function ProductCard({ product, onClick }: ProductCardProps) {
   // Parse images if string
   const images = typeof product.images === 'string' ? JSON.parse(product.images) : product.images;
   const mainImage = images.length > 0 ? images[0] : '/placeholder.png';
 
   return (
-   // Para hacer clickeable el ProductCard cambiar el primer div -> Link y agregar la ruta
-    // href={`/products/${product.id}`}
-    <div className="group">
+    <div 
+      className="group cursor-pointer"
+      onClick={onClick}
+    >
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
         <div className="relative h-64 overflow-hidden">
           <img
             src={mainImage}
             alt={product.name}
-            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover transition-transform duration-300"
           />
           {product.isPersonalizable && (
             <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center shadow">
@@ -44,9 +50,6 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="text-xl font-bold text-gray-900">
               ${product.price.toFixed(2)}
             </span>
-            {/* <span className="text-sm text-blue-600 font-medium group-hover:underline">
-              View Details
-            </span> */}
           </div>
         </div>
       </div>

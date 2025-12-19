@@ -30,30 +30,8 @@ model Product {
   type             String      // e.g., "Mug", "Keychain", "Small", "Medium"
   isPersonalizable Boolean     @default(false)
   isHidden         Boolean     @default(false)
-  orderItems       OrderItem[]
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
-}
-
-model Order {
-  id              Int         @id @default(autoincrement())
-  customerName    String
-  customerContact String      // Phone or Email
-  status          String      // "REQUESTED", "COMPLETED"
-  items           OrderItem[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-}
-
-model OrderItem {
-  id                   Int     @id @default(autoincrement())
-  orderId              Int
-  order                Order   @relation(fields: [orderId], references: [id])
-  productId            Int
-  product              Product @relation(fields: [productId], references: [id])
-  quantity             Int
-  personalizationImage String? // URL to uploaded image
-  personalizationText  String?
 }
 
 model User {
