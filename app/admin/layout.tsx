@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutDashboard, Package, ShoppingCart, List } from 'lucide-react';
+import { LayoutDashboard, Package, List, Home } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
 
 export default function AdminLayout({
@@ -40,6 +40,13 @@ export default function AdminLayout({
         
         {/* Logout Section */}
         <div className="p-4 border-t border-gray-200">
+          <Link
+            href="/"
+            className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600 transition-colors mb-2 rounded-md"
+          >
+            <Home className="w-5 h-5 mr-3" />
+            Home
+          </Link>
           <LogoutButton />
         </div>
       </aside>
