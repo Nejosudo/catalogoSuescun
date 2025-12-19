@@ -30,12 +30,36 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [showPersonalizableOnly, setShowPersonalizableOnly] = useState(false);
 
   useEffect(() => {
     fetchData();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        setIsAdmin(data.role === 'ADMIN');
+      }
+    } catch (error) {
+      setIsAdmin(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setIsAdmin(false);
+      window.location.reload();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -81,8 +105,17 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun</h1>
           <div className="flex items-center gap-4">
-
-
+            <Link href="/admin" className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors">
+              Admin
+            </Link>
+            {isAdmin && (
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors shadow-sm"
+              >
+                Cerrar Sesión
+              </button>
+            )}
           </div>
         </div>
       </header>
