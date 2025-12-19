@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { formatPrice } from '@/lib/utils';
 import { Tag } from 'lucide-react';
 
 interface Product {
@@ -48,7 +49,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           </h3>
           <div className="flex justify-between items-center">
             <span className="text-xl font-bold text-gray-900">
-              ${product.price.toFixed(2)}
+              $ {formatPrice(product.price)}
             </span>
           </div>
         </div>

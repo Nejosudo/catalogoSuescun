@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 
 interface Product {
   id: number;
@@ -122,7 +123,7 @@ export default function ProductsPage() {
                   {product.type}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  ${product.price.toFixed(2)}
+                  $ {formatPrice(product.price)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -41,7 +42,8 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center">
+        <Logo width={250} height={80} className="mb-6" />
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create your account
         </h2>

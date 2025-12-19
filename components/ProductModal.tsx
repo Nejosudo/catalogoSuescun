@@ -1,6 +1,7 @@
 "use client";
 
 import { X, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 import { useState } from "react";
 
 interface Product {
@@ -98,7 +99,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           </div>
 
           <div className="text-3xl font-bold text-gray-900 mb-6">
-            ${product.price ? product.price.toFixed(2) : '0.00'}
+            $ {product.price ? formatPrice(product.price) : '0'}
           </div>
 
           <div className="prose prose-sm text-gray-600 mb-8 flex-grow">

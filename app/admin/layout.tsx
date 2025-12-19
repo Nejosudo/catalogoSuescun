@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { LayoutDashboard, Package, List, Home } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
+import Logo from '@/components/Logo';
 
 export const metadata: Metadata = {
   title: "Administracion Suescun",
@@ -15,9 +16,10 @@ export default function AdminLayout({
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
+      {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md flex flex-col">
         <div className="p-6">
-          <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
+          <Logo width={160} height={40} />
         </div>
         <nav className="mt-6 flex-1">
           <Link
