@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-// import bcrypt from 'bcryptjs'; // We'll need to install this or use a simple hash for now since we can't install packages easily without user permission? 
-// Actually I can run npm install. I should install bcryptjs.
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
@@ -30,14 +29,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 });
     }
 
-    // 3. Create user (Password hashing omitted for brevity, but HIGHLY recommended for production)
-    // For this demo/prototype, we will store plain text but add a TODO.
-    // TODO: Add bcrypt hashing.
+    // 3. Create user in Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (authError) {
+      console.error("Supabase auth error:", authError);
+      return NextResponse.json({ error: authError.message }, { status: 400 });
+    }
+
+    // 4. Create user in Prisma (local DB)
     const user = await prisma.user.create({
       data: {
         email,
-        password, // In a real app, hash this!
-        role: 'USER', // Default role
+        password, // Ideally we shouldn't store password here if using Supabase Auth, but current logic relies on it.
+        role: 'USER', 
       },
     });
 

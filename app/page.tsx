@@ -82,9 +82,7 @@ export default function HomePage() {
           <h1 className="text-2xl font-bold text-gray-900">Sublimados Suescun</h1>
           <div className="flex items-center gap-4">
 
-            <Link href="/admin" className="text-gray-500 hover:text-gray-900 text-sm">
-              Admin
-            </Link>
+
           </div>
         </div>
       </header>
