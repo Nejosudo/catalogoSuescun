@@ -12,6 +12,7 @@ interface Product {
   category: { name: string };
   type: string;
   isHidden: boolean;
+  isPromotion: boolean;
 }
 
   // ... (previous imports)
@@ -138,7 +139,8 @@ export default function ProductsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -176,7 +178,7 @@ export default function ProductsPage() {
                   $ {formatPrice(product.price)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                 {(product as any).isPromotion && (
+                 {product.isPromotion && (
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 mr-2">
                       Promo
                     </span>
@@ -225,6 +227,56 @@ export default function ProductsPage() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {products.map(product => (
+          <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex flex-col gap-3">
+             <div className="flex justify-between items-start">
+               <div>
+                  <h3 className="font-bold text-gray-900 text-lg">{product.name}</h3>
+                  <p className="text-sm text-gray-500">{product.category?.name} • {product.type}</p>
+               </div>
+               <span className="font-bold text-gray-900 text-lg">${formatPrice(product.price)}</span>
+             </div>
+             
+             <div className="flex items-center gap-2 flex-wrap">
+                {product.isHidden ? (
+                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded flex items-center font-medium"><EyeOff size={14} className="mr-1"/> Hidden</span>
+                ) : (
+                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded flex items-center font-medium"><Eye size={14} className="mr-1"/> Visible</span>
+                )}
+                {product.isPromotion && (
+                   <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-medium">Promo</span>
+                )}
+             </div>
+
+             <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 mt-1">
+                <button 
+                  onClick={() => toggleHidden(product)} 
+                  className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100"
+                >
+                   {product.isHidden ? 'Show' : 'Hide'}
+                </button>
+                <Link 
+                  href={`/admin/products/${product.id}`} 
+                  className="px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 flex items-center"
+                >
+                  <Edit className="w-4 h-4 mr-1" /> Edit
+                </Link>
+                <button 
+                  onClick={() => handleDelete(product.id)} 
+                  className="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 flex items-center"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+             </div>
+          </div>
+        ))}
+        {products.length === 0 && (
+           <div className="text-center text-gray-500 py-8">No products found.</div>
+        )}
       </div>
     </div>
   );

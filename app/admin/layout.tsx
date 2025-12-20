@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { LayoutDashboard, Package, List, Home } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
 import Logo from '@/components/Logo';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 
 export const metadata: Metadata = {
   title: "Administracion Suescun",
@@ -15,49 +16,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md flex flex-col">
-        <div className="p-6">
-          <Logo width={160} height={40} />
-        </div>
-        <nav className="mt-6 flex-1">
-          <Link
-            href="/admin/products"
-            className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600"
-          >
-            <Package className="w-5 h-5 mr-3" />
-            Products
-          </Link>
-          <Link
-            href="/admin/categories"
-            className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600"
-          >
-            <List className="w-5 h-5 mr-3" />
-            Categories
-          </Link>
-
-          <Link
-            href="/admin/settings"
-            className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600"
-          >
-            <LayoutDashboard className="w-5 h-5 mr-3" />
-            Settings
-          </Link>
-        </nav>
-        
-        {/* Logout Section */}
-        <div className="p-4 border-t border-gray-200">
-          <Link
-            href="/"
-            className="flex items-center px-6 py-3 text-black hover:bg-gray-100 hover:text-blue-600 transition-colors mb-2 rounded-md"
-          >
-            <Home className="w-5 h-5 mr-3" />
-            Home
-          </Link>
-          <LogoutButton />
-        </div>
-      </aside>
+      <AdminSidebar />
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-8">
